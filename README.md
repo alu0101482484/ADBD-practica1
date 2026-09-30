@@ -41,7 +41,7 @@ FROM pg_roles
 ORDER BY rolname;
 
 ```
-![Apartado 1](capturas_ADBD/c1.png)
+![c1](capturas_ADBD/c1.png)
 
 ```sql
 -- 2e
