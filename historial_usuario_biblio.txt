@@ -1,0 +1,7 @@
+SELECT * FROM autores;
+sudo -u postgres psql
+\q
+SELECT * FROM autores;
+DELETE FROM prestamos;
+INSERT INTO autores (nombre) VALUES ('x');
+\q

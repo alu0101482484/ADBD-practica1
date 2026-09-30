@@ -1,0 +1,100 @@
+\password postgres
+createdb bibliotecapsql -d biblioteca
+\db
+CREATE DATABASE biblioteca;
+CREATE DATABASE biblioteca;
+\l
+\q
+CREATE ROLE admin_biblio WITH LOGIN PASSWORD 'adminpass';
+CREATE ROLE usuario_biblio WITH LOGIN PASSWORD 'usuariopass';
+\l
+\q
+GRANT ALL PRIVILEGES ON DATABASE biblioteca TO admin_biblio;
+\c biblioteca
+\l
+\l
+\q
+\c biblioteca
+CREATE ROLE lectores NOLOGIN;
+GRANT lectores TO usuario_biblio;
+SELECT rolname, rolsuper, rolcreaterole, rolcreatedb, rolcanlogin FROM pg_rolesSELECT rolname, rolsuper, rolcreaterole, rolcreatedb, rolcanlogin FROM pg_roles;
+SELECT rolname, rolsuper, rolcreaterole, rolcreatedb, rolcanlogin FROM pg_roles ORDER BY rolname;
+CREATE TABLE empleados (    id_autor SERIAL PRIMARY KEY,    nombre NOMBRE ,    nacionalidad TEXT);
+CREATE TABLE empleados (id_autor SERIAL PRIMARY KEY, nombre TEXT NOT NULL, nacionalidad TEXT);
+\dt
+drop table empleados;
+\dt
+CREATE TABLE autores (id_autor SERIAL PRIMARY KEY, nombre TEXT NOT NULL, nacionalidad TEXT);
+\dt
+\q
+\l
+\l
+\l
+\q
+\c biblioteca
+ALTER DATABASE biblioteca OWNER TO admin_biblio;
+GRANT CONNECT ON DATABASE biblioteca TO lectores;
+GRANT USAGE ON SCHEMA public TO lectores;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO lectores;
+GRANT ALL ON SCHEMA public TO admin_biblio;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO admin_biblio;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO admin_biblio;
+SELECT rolname, rolsuper, rolcreaterole, rolcreatedb, rolcanloginFROM pg_rolesORDER BY rolname;
+ALTER ROLE usuario_biblio WITH PASSWORD 'usuariobiblio';
+\dt
+CREATE TABLE libros (    id_libro        SERIAL PRIMARY KEY,    titulo          TEXT NOT NULL,    año_publicacion INTEGER,    id_autor        INTEGER NOT NULL REFERENCES autores(id_autor));
+\dt
+CREATE TABLE prestamos (    id_prestamo         SERIAL PRIMARY KEY,    id_libro            INTEGER NOT NULL REFERENCES libros(id_libro) ON DELETE CASCADE,    fecha_prestamo      DATE NOT NULL DEFAULT CURRENT_DATE,    fecha_devolucion    DATE,    usuario_prestatario TEXT NOT NULL);
+\dt
+/d prestamosREVOKE DELETE ON ALL TABLES IN SCHEMA public FROM usuario_biblio;
+\dt\d prestamos
+\dt\d prestamos
+REVOKE DELETE ON ALL TABLES IN SCHEMA public FROM usuario_biblio;
+REVOKE DELETE ON ALL TABLES IN SCHEMA public FROM lectores;
+/dp/dp
+\r
+/dp;
+\dp
+INSERT INTO autores (nombre, nacionalidad) VALUES('Gabriel García Márquez', 'Colombiana'),('Isabel Allende', 'Chilena'),('Miguel de Cervantes', 'Española'),('Benito Pérez Galdós', 'Española'),('Jorge Luis Borges', 'Argentina');
+INSERT INTO libros (titulo, año_publicacion, id_autor) VALUES('Cien años de soledad', 1967, 1),('El amor en los tiempos del cólera', 1985, 1),('Crónica de una muerte anunciada', 1981, 1),('La casa de los espíritus', 1982, 2),('Eva Luna', 1987, 2),('Don Quijote de la Mancha', 1605, 3),('Fortunata y Jacinta', 1887, 4),('Ficciones', 1944, 5);
+INSERT INTO prestamos (id_libro, fecha_prestamo, fecha_devolucion, usuario_prestatario) VALUES(1, '2026-09-01', '2026-09-10', 'ana_garcia'),(1, '2026-09-12', NULL,         'carlos_perez'),(4, '2026-09-05', '2026-09-15', 'ana_garcia'),(6, '2026-09-10', NULL,         'lucia_martin'),(1, '2026-08-20', '2026-08-30', 'lucia_martin'),(4, '2026-09-15', NULL,         'carlos_perez'),(8, '2026-09-18', NULL,         'ana_garcia'),(2, '2026-09-01', '2026-09-08', 'carlos_perez');
+SELECT * FROM autores;
+SELECT * FROM libros;
+SELECT * FROM prestamos;
+\q
+\c biblioteca 
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO lectores;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO admin_biblio;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO admin_biblio;
+\dp
+\du usuario_biblio
+\dp
+\q
+\c biblioteca 
+clearSELECT l.titulo, l.año_publicacion, a.nombre AS autorFROM libros lJOIN autores a ON a.id_autor = l.id_autorORDER BY a.nombre, l.titulo;
+SELECT l.titulo, l.año_publicacion, a.nombre AS autorFROM libros lJOIN autores a ON a.id_autor = l.id_autorORDER BY a.nombre, l.titulo;
+SELECT * FROM prestamos WHERE fecha_devolucion IS NULL;
+SELECT a.nombre, COUNT(*) AS num_librosFROM autores aJOIN libros l ON l.id_autor = a.id_autorGROUP BY a.nombreHAVING COUNT(*) > 1;
+SELECT COUNT(*) AS total_prestamos FROM prestamos;
+SELECT usuario_prestatario, COUNT(*) AS libros_prestadosFROM prestamosGROUP BY usuario_prestatarioORDER BY libros_prestados DESC;
+UPDATE prestamosSET fecha_devolucion = CURRENT_DATEWHERE id_prestamo = 2RETURNING *;
+SELECT * FROM prestamos WHERE id_libro = 8DELETE FROM libros WHERE id_libro = 8;
+SELECT * FROM prestamos WHERE id_libro = 8;
+DELETE FROM libros WHERE id_libro = 8;
+SELECT * FROM prestamos WHERE id_libro = 8;
+CREATE VIEW vista_libros_prestados ASSELECT l.titulo, a.nombre AS autor, p.usuario_prestatario AS prestatarioFROM prestamos pJOIN libros l  ON l.id_libro = p.id_libroJOIN autores a ON a.id_autor = l.id_autor;
+SELECT * FROM vista_libros_prestados;
+REVOKE ALL ON vista_libros_prestados FROM PUBLIC, lectores;
+GRANT SELECT ON vista_libros_prestados TO usuario_biblio;
+\dp vista_libros_prestados
+CREATE OR REPLACE FUNCTION libros_de_autor(p_nombre TEXT)RETURNS TABLE (titulo TEXT, año_publicacion INTEGER)LANGUAGE sqlAS $$    SELECT l.titulo, l.año_publicacion    FROM libros l    JOIN autores a ON a.id_autor = l.id_autor    WHERE a.nombre ILIKE p_nombre;$$;
+SELECT * FROM libros_de_autor('Gabriel García Márquez');
+SELECT * FROM libros_de_autor('%allende%');
+SELECT l.titulo, COUNT(*) AS veces_prestadoFROM libros lJOIN prestamos p ON p.id_libro = l.id_libroGROUP BY l.tituloORDER BY veces_prestado DESC, l.tituloLIMIT 3;
+\copy libros TO '/tmp/libros.csv' WITH (FORMAT csv, HEADER)
+\q
+\c biblioteca 
+\copy autores(nombre, nacionalidad) FROM '/tmp/autores_extra.csv' WITH (FORMAT csv, HEADER)SELECT * FROM autores;
+\copy autores(nombre, nacionalidad) FROM '/tmp/autores_extra.csv' WITH (FORMAT csv, HEADER);
+SELECT * FROM autores;
+\q
