@@ -39,7 +39,9 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO admin_biblio
 SELECT rolname, rolsuper, rolcreaterole, rolcreatedb, rolcanlogin
 FROM pg_roles
 ORDER BY rolname;
+![c1](Capturas_ADBD/c1.png)
+
 -- 2e
 ALTER ROLE usuario_biblio WITH PASSWORD 'nuevapass';
 ```
-![c1](Capturas_ADBD/c1.png)
+
