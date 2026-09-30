@@ -41,7 +41,7 @@ FROM pg_roles
 ORDER BY rolname;
 
 ```
-![c1](capturas_ADBD/c1.png)
+![c1](Capturas_ADBD/c1.png)
 
 ```sql
 -- 2e
@@ -78,7 +78,7 @@ CREATE TABLE prestamos (
 
 ```
 
-![c2](capturas_ADBD/c2.png)
+![c2](Capturas_ADBD/c2.png)
 
 ```sql
 
@@ -92,7 +92,7 @@ REVOKE DELETE ON ALL TABLES IN SCHEMA public FROM usuario_biblio;
 REVOKE DELETE ON ALL TABLES IN SCHEMA public FROM lectores;
 \dp
 ```
-![c3](capturas_ADBD/c3.png)
+![c3](Capturas_ADBD/c3.png)
 
 ## 4. Inserción de datos
 
@@ -129,7 +129,7 @@ SELECT * FROM autores;
 SELECT * FROM libros;
 SELECT * FROM prestamos;
 ```
-![c6](capturas_ADBD/c6.png)
+![c6](Capturas_ADBD/c6.png)
 
 ## Comprobación de permisos de usuario_biblio (2f)
 
@@ -143,7 +143,7 @@ DELETE FROM prestamos;
 INSERT INTO autores (nombre) VALUES ('Prueba');
 \q
 ```
-![c8](capturas_ADBD/c8.png)
+![c8](Capturas_ADBD/c8.png)
 
 ## 5. Consultas básicas
 
@@ -155,13 +155,13 @@ JOIN autores a ON a.id_autor = l.id_autor
 ORDER BY a.nombre, l.titulo;
 
 ```
-![c9](capturas_ADBD/c9.png)
+![c9](Capturas_ADBD/c9.png)
 ```sql
 -- 5b
 SELECT * FROM prestamos WHERE fecha_devolucion IS NULL;
 
 ```
-![c10](capturas_ADBD/c10.png)
+![c10](Capturas_ADBD/c10.png)
 
 ```sql
 -- 5c
@@ -171,7 +171,7 @@ JOIN libros l ON l.id_autor = a.id_autor
 GROUP BY a.nombre
 HAVING COUNT(*) > 1;
 ```
-![c11](capturas_ADBD/c11.png)
+![c11](Capturas_ADBD/c11.png)
 ## 6. Consultas con agregación
 
 ```sql
@@ -184,7 +184,7 @@ FROM prestamos
 GROUP BY usuario_prestatario
 ORDER BY libros_prestados DESC;
 ```
-![c12](capturas_ADBD/c12.png)
+![c12](Capturas_ADBD/c12.png)
 
 ## 7. Modificación de datos
 
@@ -196,7 +196,7 @@ WHERE id_prestamo = 2
 RETURNING *;
 
 ```
-![c13](capturas_ADBD/c13.png)
+![c13](Capturas_ADBD/c13.png)
 
 ```sql
 -- 7b
@@ -206,7 +206,7 @@ SELECT * FROM prestamos WHERE id_libro = 8;
 
 --> Justificación: Gracias al ON DELETE CASCADE de la tabla prestamos, al borrar el libro se eliminan automáticamente sus préstamos. Sin él, el comportamiento por defecto impediría borrar el libro y daría un error de clave foránea.
 ```
-![c14](capturas_ADBD/c14.png)
+![c14](Capturas_ADBD/c14.png)
 
 ## 8. Creación de vistas
 
@@ -221,7 +221,7 @@ JOIN autores a ON a.id_autor = l.id_autor;
 SELECT * FROM vista_libros_prestados;
 
 ```
-![c15](capturas_ADBD/c15.png)
+![c15](Capturas_ADBD/c15.png)
 
 
 ```sql
@@ -231,7 +231,7 @@ REVOKE ALL ON vista_libros_prestados FROM PUBLIC, lectores;
 GRANT SELECT ON vista_libros_prestados TO usuario_biblio;
 \dp vista_libros_prestados
 ```
-![c16](capturas_ADBD/c16.png)
+![c16](Capturas_ADBD/c16.png)
 
 
 ## 9. Funciones y consultas avanzadas
@@ -251,7 +251,7 @@ $$;
 SELECT * FROM libros_de_autor('Gabriel García Márquez');
 
 ```
-![c17](capturas_ADBD/c17.png)
+![c17](Capturas_ADBD/c17.png)
 
 
 ```sql
@@ -265,7 +265,7 @@ ORDER BY veces_prestado DESC, l.titulo
 LIMIT 3;
 ```
 
-![c18](capturas_ADBD/c18.png)
+![c18](Capturas_ADBD/c18.png)
 
 
 ## 10. Exportación e importación de datos
@@ -286,7 +286,7 @@ Carmen Laforet,Española
 EOF
 ```
 
-![c19](capturas_ADBD/c19.png)
+![c19](Capturas_ADBD/c19.png)
 
 ```sql
 -- 10b
