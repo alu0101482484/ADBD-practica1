@@ -42,4 +42,4 @@ ORDER BY rolname;
 -- 2e
 ALTER ROLE usuario_biblio WITH PASSWORD 'nuevapass';
 ```
-![Cap1]([capturas_ADBD/c1.png](https://github.com/alu0101482484/ADBD-practica1/blob/main/Capturas_ADBD/c1.png))
+![c1](Capturas_ADBD/c1.png)
