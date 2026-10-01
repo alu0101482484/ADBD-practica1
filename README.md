@@ -1,6 +1,7 @@
 # Práctica 1. Conceptos fundamentales de PostgreSQL
 
-**Autores:** Claudia Díaz González
+**Autor:** Claudia Díaz González
+
 **ALU:** alu0101482484@ull.edu.es
 
 
